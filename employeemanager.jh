@@ -1,0 +1,114 @@
+
+application {
+  config {
+    baseName employeeManager,
+    applicationType gateway,
+    packageName com.kluksa,
+    authenticationType jwt,
+    prodDatabaseType postgresql,
+    clientFramework react
+  }
+  entities *
+}
+
+application {
+  config {
+    baseName teamManager,
+    applicationType microservice,
+    packageName com.kluksa,
+    authenticationType jwt,
+    prodDatabaseType postgresql,
+  }
+  entities Employee, Teams, TeamAllocation
+}
+
+application {
+  config {
+    baseName projectManager,
+    applicationType microservice,
+    packageName com.kluksa,
+    authenticationType jwt,
+    prodDatabaseType postgresql,
+  }
+  entities Employee, Projects, ProjectAllocation
+}
+
+entity Employee {
+    firstName String,
+    lastName String,
+    dateOfBirth LocalDate,
+}
+
+entity Payroll {
+	effectiveDate LocalDate,
+    amountTotal BigDecimal,
+    amountNet BigDecimal,
+}
+
+entity Bonus {
+	employee Employee,
+    effectiveDate LocalDate,
+    amount BigDecimal,
+    note TextBlob,
+}
+
+entity Benefit {
+	employee Employee,
+    type BenefitType,
+    effectiveDate LocalDate,
+    value BigDecimal,
+    endDate LocalDate
+}
+
+entity Notes {
+	timestamp Instant,
+    note TextBlob,
+}
+
+entity Teams {
+	start LocalDate,
+    end LocalDate,
+}
+
+entity TeamAllocation{
+	start LocalDate,
+    end LocalDate,
+    note String,
+}
+entity Projects{
+	start LocalDate,
+    end LocalDate,
+    name String,
+    note String,
+    
+}
+
+entity ProjectAllocation {
+	start LocalDate,
+    end LocalDate,
+    note String,
+}
+
+relationship ManyToOne{
+	Teams{leader} to Employee,	
+	TeamAllocation{member} to Employee,
+    TeamAllocation{team} to Teams,
+	ProjectAllocation{project} to Projects,
+	ProjectAllocation{member} to Employee,
+	Projects{manager} to Employee,
+	Benefit{employee} to Employee,
+    Bonus{employee} to Employee,
+    Payroll{employee} to Employee,
+    Notes{employee} to Employee,
+}
+
+
+relationship OneToOne {
+	Employee{user} to User,
+}
+
+enum BenefitType {
+	CAR
+}
+paginate Employee with infinite-scroll
+paginate Benefits with pagination
